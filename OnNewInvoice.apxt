@@ -1,0 +1,5 @@
+trigger OnNewInvoice on Invoice2__c (after insert) {
+    for(Invoice2__c invoice : trigger.new){
+    	InvoicesController.generatePdf(invoice.Id);
+    }
+}

@@ -1,0 +1,114 @@
+<apex:page controller="InvoicesController" applyHtmlTag="false" showHeader="false" renderAs="PDF">
+    <html>
+
+    <head></head>
+
+    <body>
+        <table style="font-family:sans-serif; padding-bottom:30px;width:100%">
+            <tr>
+                <td>
+                    <apex:image url="{!$Resource.logo}" width="180" height="90" />
+                </td>
+                <td style="font:18pt; padding-left:10px; padding-right:100px;">Retail Stores</td>
+                <td style="font:18pt;">INVOICE {!inv.Name}</td>
+            </tr>
+        </table>
+        
+        <table style="font-family:sans-serif;font-size:12px;width:100%">
+            <tr style="color:#fff; background-color: rgb(3, 175, 243)">
+                <th style="padding-left:5px; padding-right:170px;">
+                    Bill To
+                </th>
+            </tr>
+            <tr>
+                <td style="padding-left:5px;width:35%;height:30px">
+                    <apex:outputField value="{!inv.Account__r.Name}" />
+                </td>
+                <td style="width:40%;text-align:right">Created Date</td>
+                <td style="padding-left:5px;">
+                    <apex:outputText value="{0,date,dd' 'MMMMM' 'yyyy}">
+                        <apex:param value="{!inv.BillingDate__c}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-left:5px;width:35%;height:30px">
+                <apex:outputText >{!inv.Account__r.BillingStreet}</apex:outputText>
+                </td>
+                <td style="width:40%;text-align:right">Contact name</td>
+                <td>{!inv.Contact__r.FirstName} {!inv.Contact__r.LastName}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:5px;width:35%;height:30px">
+                <apex:outputText >{!inv.Account__r.BillingCity}</apex:outputText>
+                </td>
+                <td style="width:40%;text-align:right">Email</td>
+                <td>{!inv.Contact__r.Email}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:5px;width:35%;height:30px">
+                <apex:outputText >{!inv.Account__r.BillingPostalCode}</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-left:5px;width:35%;height:30px">
+                <apex:outputText >{!inv.Account__r.BillingCountry}</apex:outputText>
+                </td>
+            </tr>
+        </table>
+
+        <table style="font-family:sans-serif;width:100%;font-size:12px;margin-bottom:20px" cellpadding="0" cellspacing="0">
+            <tr style="color:#fff;background-color: rgb(3, 175, 243);">
+                <th style="text-align:center;">Description</th>
+                <th style="text-align:right;padding-right:5px;">Qty</th>
+                <th style="text-align:right;padding-right:5px;">Unit Price</th>
+                <th style="text-align:right;padding-right:5px;">Amount</th>
+            </tr>
+            <apex:repeat value="{!inv.InvoiceLines2__r}" var="il">
+                <tr style="background-color:#ffdecc;">
+                    <td style="height:30px;text-align:center;">{!inv.Order__c} - {!il.Product__c}</td>
+                    <td style="text-align:right;padding-right:5px;">{!il.Quantity__c}</td>
+                    <td style="text-align:right;padding-right:5px;">{!il.UnitPrice__c}</td>
+                    <td style="text-align:right;padding-right:5px;">{!il.TotalPrice__c}</td>
+                </tr>
+            </apex:repeat>
+            <tr>
+                <td></td>
+                <td></td>
+                <td style="text-align:right;padding-right:5px;height:30px;">Subtotal</td>
+                <td style="text-align:right;padding-right:5px;height:30px;">{!subtotal}</td>
+            </tr>
+            <tr style="font-weight:normal;">
+                <th style="text-align:center;">Prepared by</th>
+                <th style="text-align:left;padding-right:5px;height:30px;">{!$User.FirstName} {!$User.LastName}</th>
+                <th style="text-align:right;padding-right:5px;height:30px;">Discounts</th>
+                <th style="text-align:right;padding-right:5px;height:30px;">0</th>
+            </tr>
+            <tr>
+                <td style="text-align:center;height:30px;">Email</td>
+                <td style="text-align:left;padding-right:5px;height:30px;">{!$User.Email}</td>
+                <td style="text-align:right;padding-right:5px;height:30px;">Taxes</td>
+                <td style="text-align:right;padding-right:5px;height:30px;">{!taxes}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td style="text-align:right;padding-right:5px;height:30px;">Shipping charge</td>
+                <td style="text-align:right;padding-right:5px;height:30px;">0</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td style="text-align:right;padding-right:5px;color:#fff;background-color: rgb(3, 175, 243);height:30px;">Total</td>
+                <td style="text-align:right;padding-right:5px;color:#fff;background-color: rgb(3, 175, 243);height:30px;">{!total}</td>
+            </tr>
+        </table>
+
+        <div style="text-align:center;font-family:sans-serif;font-size:8px;">
+            <apex:outputText value="If you have any questions about this invoice, please contact support@retailstores.com" /> 
+            <br/>
+            <apex:outputText value="Thank you for your business !" /> 
+        </div>
+    </body>
+    </html>
+</apex:page>

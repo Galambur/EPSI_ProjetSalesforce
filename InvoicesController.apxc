@@ -1,0 +1,46 @@
+public class InvoicesController {
+	public Invoice2__c inv { get; set; }
+	public decimal subtotal {get; set;}
+	public decimal taxes {get; set;}
+	public decimal total {get; set;}
+    
+	public InvoicesController(){
+    	String params = String.valueOf(ApexPages.currentPage().getParameters().get('pdfargs'));
+        PdfArgs pdfargs = (PdfArgs)JSON.deserialize(params, PdfArgs.Class);
+        
+        this.inv = pdfargs.invoice;
+        this.subtotal = pdfargs.subtotal;
+        this.taxes = pdfargs.taxes;
+        this.total = pdfargs.total;
+	}
+    
+	@Future(callout=true)
+	public static void generatePdf(Id invoiceId){
+    	String email = 'gaelle.derambure@epsi.fr';
+   	 
+    	// si InvoicePdfController --> InvoicePdfView
+    	PageReference invoicePdf = new PageReference('/apex/InvoicePDFView');
+        
+    	Messaging.EmailFileAttachment attachment = new Messaging.EmailFileAttachment();
+    	attachment.setContentType('application/pdf');
+    	attachment.setFileName('New invoice.pdf');
+    	attachment.body = invoicePdf.getContent();
+    	attachment.setInline(false);
+   	 
+    	Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+    	mail.setToAddresses(new String[] {email});
+    	mail.setSubject('New invoice !');
+    	mail.setHtmlBody('Here\'s the pdf for your new invoice');
+    	mail.setFileAttachments(new Messaging.EmailFileAttachment[] {attachment});
+   	 
+        // ATTENTION : droit qu'à 15 tests par jour donc doucement
+    	//Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
+	}
+
+    public class PdfArgs {
+        public Invoice2__c invoice;
+        public decimal subtotal;
+        public decimal taxes;
+        public decimal total;
+    }
+}
